@@ -43,32 +43,66 @@ class Tree{
         return root;
     }
 
-    find(value){
-        //Check if there is a Root. If not, return false
-        if(!this.root){
-            return false;
+    insert(value){
+        let newNode = new Node(value);
+
+        //If there is no root
+        if(this.root === null){
+            //Then newNode is the root
+           this.root = newNode;
+           return this;
         }
 
+        let current = this.root;
+
+        while(current){
+            if(value === current.data) return undefined;
+
+            //If the adding value if lesser than the actual node value
+            if(value < current.data){
+                //check if there is a node at left
+                if(current.left === null){
+                    //If not, newNode is added
+                    current.left = newNode;
+                    return this;
+                }
+                current = current.left;
+            //If the adding value if greater than the actual node value
+            }else{
+                //check if there is a node at right
+                if(current.right === null){
+                    //If not, newNode is added
+                    current.right = newNode;
+                    return this;
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    find(value){
+        //Check if there is a Root. If not, return false
+        if(!this.root) return false;
+        
         let current = this.root;
         let found = false;
 
         while(current && !found){
             //If the searching value is lesser than the actual node value
-            if(value < current.value){
+            if(value < current.data){
                 //search left
                 current = current.left;
             //If the searching value is greater than the actual node value
-            } else if(value > current.value) {
+            } else if(value > current.data) {
                 //search right
                 current = current.right;
             }else {
                 //else, Value is found
-                found = current
+                found = current;
             }
         }
-        if(!found){
-            return undefined;
-        }
+        //If value is not found
+        if(!found) return undefined;
         return found;
     }
 }
@@ -76,5 +110,5 @@ class Tree{
 const dataArray =  [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 console.log(dataArray.length);
 const balancedBST = new Tree(dataArray, 1, 14);
-
-console.log(balancedBST.find(8))
+balancedBST.insert(10)
+console.log(balancedBST.find(10));

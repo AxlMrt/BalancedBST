@@ -42,8 +42,39 @@ class Tree{
         root.right = this.buildTree(array, mid + 1, end);
         return root;
     }
+
+    find(value){
+        //Check if there is a Root. If not, return false
+        if(!this.root){
+            return false;
+        }
+
+        let current = this.root;
+        let found = false;
+
+        while(current && !found){
+            //If the searching value is lesser than the actual node value
+            if(value < current.value){
+                //search left
+                current = current.left;
+            //If the searching value is greater than the actual node value
+            } else if(value > current.value) {
+                //search right
+                current = current.right;
+            }else {
+                //else, Value is found
+                found = current
+            }
+        }
+        if(!found){
+            return undefined;
+        }
+        return found;
+    }
 }
 
 const dataArray =  [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 console.log(dataArray.length);
 const balancedBST = new Tree(dataArray, 1, 14);
+
+console.log(balancedBST.find(8))

@@ -161,14 +161,71 @@ class Tree{
         if(!found) return undefined;
         return found;
     }
+
+    levelOrder(root){
+
+        if (root === null) return;
+
+        let queue = [];
+        let result = [];
+        
+        queue.push(root);
+
+        while(queue.length > 0){
+            let current = queue.shift(root);
+            result.push(current.data);
+
+            if (current.left) queue.push(current.left);
+            if (current.right) queue.push(current.right);
+            }
+
+        return result;
+    }
+
+    /**
+     * Function to check is the Tree is balanced
+     * @param {Number} root The root node
+     * @returns Height of node
+     */
+    checkBalance(root){
+        if (root === null){
+            return -1;
+        } else{
+            let leftN = this.checkBalance(root.left);
+            let rightN = this.checkBalance(root.right);
+
+            return Math.max(leftN, rightN) + 1;
+        }
+        
+    }
+
+    /**
+     * Function calls checkHeight
+     * @param {Number} root The root value to check
+     * @returns If the tree is balanced
+     */
+    isBalanced(root){
+        if (root == null) return false;
+
+        let leftHalf = root.left;
+        let rightHalf = root.right;
+    
+        if (Math.abs(this.checkBalance(leftHalf) - this.checkBalance(rightHalf)) > 1) {
+          return false;
+        } else {
+          return true;
+        }
+    }
+
 }
 
 
 
 const dataArray =  [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 console.log(dataArray.length);
-const balancedBST = new Tree(dataArray, 1, 14);
+const balancedBST = new Tree(dataArray);
 balancedBST.insert(10)
 console.log(balancedBST.find(10));
 balancedBST.remove(23);
-console.log(balancedBST.find(23))
+console.log(balancedBST.find(23));
+console.log(balancedBST.isBalanced());

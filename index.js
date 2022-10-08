@@ -26,7 +26,13 @@ class Tree{
         prettyPrint(this.root);
     }
 
-    //Construct the Balanced Binary Search Tree from Sorted Array
+    /**
+     * Construct the Balanced Binary Search Tree from Sorted Array
+     * @param {*} array Sorted Array
+     * @param {number} start Start of the array
+     * @param {number} end End of the array
+     * @returns Root Node
+     */
     buildTree(array, start, end){
         if(start > end){
             return null;
@@ -43,35 +49,33 @@ class Tree{
         return root;
     }
 
+    /**
+     * Insert a new Node in the BST
+     * @param {number} value to add
+     * @returns Node with given value
+     */
     insert(value){
         let newNode = new Node(value);
+        let root = this.root;
 
-        //If there is no root
-        if(this.root === null){
-            //Then newNode is the root
-           this.root = newNode;
+        if(root === null){
+           root = newNode;
            return this;
         }
 
-        let current = this.root;
+        let current = root;
 
         while(current){
             if(value === current.data) return undefined;
 
-            //If the adding value if lesser than the actual node value
             if(value < current.data){
-                //check if there is a node at left
                 if(current.left === null){
-                    //If not, newNode is added
                     current.left = newNode;
                     return this;
                 }
                 current = current.left;
-            //If the adding value if greater than the actual node value
             }else{
-                //check if there is a node at right
                 if(current.right === null){
-                    //If not, newNode is added
                     current.right = newNode;
                     return this;
                 }
@@ -80,35 +84,91 @@ class Tree{
         }
     }
 
+    /**
+     * This function calls removeNode
+     * @param {number} value The value to remove
+     */
+    remove(value){
+        this.root = this.removeNode(this.root, value);
+    }
+
+    /**
+     * Recursive function to delete an existing key
+     * @param {*} current Is the actual Node
+     * @param {*} value Value of remove() function
+     * @returns The node that contains the value and delete it
+     */
+    removeNode(current, value){
+        let root = this.root;
+
+        if(current === null) return current;
+
+        if(value < current.data){
+           current.left = this.removeNode(current.left, value)
+        }else if(value > current.data){
+            current.right = this.removeNode(current.right, value)
+        }else{
+            if(current.left === null){
+                return current.right;
+            }else if(current.right === null){
+                return current.left;
+            }
+
+            root.data = minValue(current.right);
+            current.right = this.removeNode(current.right, root.data);
+        }
+        return current;
+    }
+
+    /**
+     * Helper function to find the smallest node
+     * @param {number} node to check for
+     * @returns smallest Node
+     */
+     minValue(node){
+        let minv = this.root.data;
+        while (node.left !== null)
+        {
+            minv = node.left.data;
+            this.root = node.left;
+        }
+        return minv;
+    }
+
+    /**
+     * Search if the given value is in
+     * @param {number} value - the value to check for
+     * @returns true if the value is in the tree, false otherwise
+     */
     find(value){
-        //Check if there is a Root. If not, return false
-        if(!this.root) return false;
+        let root = this.root;
+
+        if(!root) return false;
         
-        let current = this.root;
+        let current = root;
         let found = false;
 
         while(current && !found){
-            //If the searching value is lesser than the actual node value
             if(value < current.data){
-                //search left
                 current = current.left;
-            //If the searching value is greater than the actual node value
             } else if(value > current.data) {
-                //search right
                 current = current.right;
             }else {
-                //else, Value is found
                 found = current;
             }
         }
-        //If value is not found
+
         if(!found) return undefined;
         return found;
     }
 }
+
+
 
 const dataArray =  [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 console.log(dataArray.length);
 const balancedBST = new Tree(dataArray, 1, 14);
 balancedBST.insert(10)
 console.log(balancedBST.find(10));
+balancedBST.remove(23);
+console.log(balancedBST.find(23))

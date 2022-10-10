@@ -162,7 +162,7 @@ class Tree{
         return found;
     }
 
-    levelOrder(root){
+    levelOrder(root){ // Not sure about this one
 
         if (root === null) return;
 
@@ -183,11 +183,87 @@ class Tree{
     }
 
     /**
-     * Function to check is the Tree is balanced
-     * @param {Number} root The root node
-     * @returns Height of node
+     * inOrder traversal Function
+     * @param {Root} root call this.root
+     * @returns arr of inOrder traversal
      */
-    checkBalance(root){
+    inOrder(root = this.root){
+        const stack = [];
+        let traversed = [];
+        let curr = root;
+
+        while(stack.length || curr){
+            while(curr){
+                stack.push(curr);
+                curr = curr.left;
+            }
+            curr = stack.pop();
+            traversed.push(curr.data);
+            curr = curr.right;
+        }
+        return traversed;
+    }
+
+    /**
+     * PreOrder traversal Function
+     * @param {Root} root Call this.root
+     * @returns Array of preOrder Traversal
+     */
+    preOrder(root = this.root){
+        const stack = [root];
+        let traversed = [];
+        let curr;
+
+        while(stack.length){
+            curr = stack.pop();
+            traversed.push(curr.data);
+            if(curr.right) stack.push(curr.right);
+            if(curr.left) stack.push(curr.left);
+        }
+
+        return traversed;
+    }
+
+    postOrder(root = this.root){
+        const s1 = [root];
+        let s2 = [];
+        let traversed = [];
+        let curr;
+
+        while(s1.length){
+            curr = s1.pop();
+            if (curr.left) s1.push(curr.left);
+            if (curr.right) s1.push(curr.right);
+            s2.push(curr);
+        }
+
+        while(s2.length){
+            curr = s2.pop();
+            traversed.push(curr.data);
+        }
+        return traversed;
+    }
+
+    findDepth(value){
+        if (value === null) return -1;
+
+        let dist = -1;
+
+        if(this.root.data == value || 
+            (dist = findDepth(this.root.left, value)) >= 0 ||
+                (dist = this.findDepth(this.root.right, value)) >= 0){
+            return dist + 1;
+        }
+
+        return dist;
+    }
+
+    /**
+     * Function to check is the Tree is balanced
+     * @param {Root} root call this.root
+     * @returns The difference between height of nodes
+     */
+    checkBalance(root = this.root){
         if (root === null){
             return -1;
         } else{
@@ -201,10 +277,10 @@ class Tree{
 
     /**
      * Function calls checkHeight
-     * @param {Number} root The root value to check
+     * @param {Root} root call this.root
      * @returns If the tree is balanced
      */
-    isBalanced(root){
+    isBalanced(root = this.root){
         if (root == null) return false;
 
         let leftHalf = root.left;
@@ -229,3 +305,6 @@ console.log(balancedBST.find(10));
 balancedBST.remove(23);
 console.log(balancedBST.find(23));
 console.log(balancedBST.isBalanced());
+console.log(balancedBST.preOrder());
+console.log(balancedBST.inOrder());
+console.log(balancedBST.postOrder());

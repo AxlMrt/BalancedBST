@@ -325,16 +325,11 @@ class Tree{
         return this.checkBalance(root) !== false;
     }
 
-    balancedBST(root = this.root){
-        if(this.isBalanced(root)) return root;
-
-        let reBalanceTree = [];
-        this.inOrder(root, reBalanceTree);
-        const newTree = new Tree(reBalanceTree);
-        return newTree;
+    balancedBST(){
+        const inOrderList = this.inOrder();
+        this.root = this.buildTree(inOrderList)
     }
 }
-
 
 
 const dataArray =  [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];

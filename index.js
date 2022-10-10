@@ -121,21 +121,6 @@ class Tree{
     }
 
     /**
-     * Helper function to find the smallest node
-     * @param {number} node to check for
-     * @returns smallest Node
-     */
-     minValue(node){
-        let minv = this.root.data;
-        while (node.left !== null)
-        {
-            minv = node.left.data;
-            this.root = node.left;
-        }
-        return minv;
-    }
-
-    /**
      * Search if the given value is in
      * @param {number} value - the value to check for
      * @returns true if the value is in the tree, false otherwise
@@ -162,7 +147,12 @@ class Tree{
         return found;
     }
 
-    levelOrder(root){ // Not sure about this one
+    /**
+     * Breadth-first traversal function
+     * @param {Root} root call this.root
+     * @returns arr of the traversal
+     */
+    levelOrder(root = this.root){
 
         if (root === null) return;
 
@@ -207,7 +197,7 @@ class Tree{
     /**
      * PreOrder traversal Function
      * @param {Root} root Call this.root
-     * @returns Array of preOrder Traversal
+     * @returns Array of preOrder traversal
      */
     preOrder(root = this.root){
         const stack = [root];
@@ -224,6 +214,11 @@ class Tree{
         return traversed;
     }
 
+    /**
+     * postOrder traversal function
+     * @param {Root} root call this.root
+     * @returns Arr of postOrder traversal
+     */
     postOrder(root = this.root){
         const s1 = [root];
         let s2 = [];
@@ -244,55 +239,100 @@ class Tree{
         return traversed;
     }
 
-    findDepth(value){
-        if (value === null) return -1;
+    /**
+     * Find height of the given Node
+     * @param {Number} node the Node we search for
+     * @returns Height of the node
+     */
+    height(node = this.root){
+        if(node !== null){
+            let a = this.height(node.left);
+            let b = this.height(node.right);
 
-        let dist = -1;
-
-        if(this.root.data == value || 
-            (dist = findDepth(this.root.left, value)) >= 0 ||
-                (dist = this.findDepth(this.root.right, value)) >= 0){
-            return dist + 1;
+            if(a > b){
+                return a + 1;
+            } else {
+                return b + 1;
+            }
+        } else {
+            return 0;
         }
 
-        return dist;
     }
+
+    /**
+     * Function to search the depth of a given node
+     * @param {*} node Node we search for
+     * @param {*} level Depth of the node
+     * @param {*} value Value of the given node 
+     * @returns the level of given node. If not found, return 0
+     */
+    findDepth(node, level, value){
+        if (node === null) return 0;
+        if (value === node.data) return level;
+
+        let ans = this.findDepth(node.left, level + 1, value);
+        if (ans === 0){
+            ans = this.findDepth(node.right, level + 1, value);
+        }
+
+        return ans
+    }
+
+    /**
+     * Handle the request to find the given value
+     * @param {Number} value value we search for
+     * @returns Depth of the value
+     */
+    findNodeDepth(value){
+        let root = this.root;
+        if(root === null) return "Empty tree";
+
+        let ans = this.findDepth(root, 1, value);
+        if(ans !== 0){
+            return ans;
+        }else{
+            return undefined;
+        }
+    }
+
 
     /**
      * Function to check is the Tree is balanced
-     * @param {Root} root call this.root
+     * @param {Node} node call isBalance
      * @returns The difference between height of nodes
      */
-    checkBalance(root = this.root){
-        if (root === null){
-            return -1;
-        } else{
-            let leftN = this.checkBalance(root.left);
-            let rightN = this.checkBalance(root.right);
+    checkBalance(node){
+        if (node === null) return 0;
 
-            return Math.max(leftN, rightN) + 1;
+        let left = this.isBalanced(node.left)
+        let right = this.isBalanced(node.right)
+    
+        if (left === false || right === false || Math.abs(left - right) > 1) {
+          return false
         }
-        
+
+        return Math.max(left, right) + 1;
     }
 
     /**
-     * Function calls checkHeight
+     * Function calls checkBalance
      * @param {Root} root call this.root
      * @returns If the tree is balanced
      */
     isBalanced(root = this.root){
-        if (root == null) return false;
-
-        let leftHalf = root.left;
-        let rightHalf = root.right;
-    
-        if (Math.abs(this.checkBalance(leftHalf) - this.checkBalance(rightHalf)) > 1) {
-          return false;
-        } else {
-          return true;
-        }
+        if (root === null) return true;
+        return this.checkBalance(root) !== false;
     }
 
+    balancedBST(root = this.root){
+        if(this.isBalanced(root)) return root;
+
+        let reBalanceTree = [];
+        this.inOrder(root, reBalanceTree);
+        const newTree = new Tree(reBalanceTree);
+        return newTree;
+    }
 }
 
 
@@ -308,3 +348,8 @@ console.log(balancedBST.isBalanced());
 console.log(balancedBST.preOrder());
 console.log(balancedBST.inOrder());
 console.log(balancedBST.postOrder());
+console.log(balancedBST.levelOrder());
+console.log(balancedBST.findNodeDepth(67));
+console.log(balancedBST.height(67));
+balancedBST.balancedBST();
+console.log(balancedBST.isBalanced());
